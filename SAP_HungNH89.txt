@@ -48,7 +48,7 @@ START-OF-SELECTION.
   PERFORM GET_DATA.
 
   IF GT_REPORT IS INITIAL.
-    MESSAGE 'No flight booking data found' TYPE 'S' DISPLAY LIKE 'E'.
+    MESSAGE 'No flight booking data found in Database' TYPE 'S' DISPLAY LIKE 'E'.
     RETURN.
   ENDIF.
 
@@ -62,6 +62,7 @@ TOP-OF-PAGE.
 *---------------------------------------------------------------------*
 * Form GET_DATA
 *---------------------------------------------------------------------*
+* Get data from table SPFLI, SBOOK
 FORM GET_DATA.
   SELECT SPFLI~CARRID,
          SPFLI~CONNID,

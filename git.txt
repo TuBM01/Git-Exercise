@@ -7,7 +7,7 @@ git config --global user.email "your-email@example.com"
 git config --global --list 
 B4: git init 
 
--------------------------------------------
+*******************************************************************************
 Thao tác với remotes
 git remote add origin https://github.com/username/repo.git
 git push -u origin main
@@ -18,7 +18,7 @@ git pull origin <branchname> = git fetch + git merge
 git log
 git log --oneline 
 
--------------------------------------------
+*******************************************************************************
 Nhóm command liên quan đến branch:
 \*note: khi đang ở branch a -> git branch b -> branch b sẽ cop nguyên code của branch a
 
@@ -35,7 +35,7 @@ Xóa nhánh
 git branch -d branch-name -> local
 git push origin --delete branch-name -> remote
 
---------------------------------------
+*******************************************************************************
 Yêu cầu mỗi nhóm luyện tập
 
 create folder
@@ -52,7 +52,7 @@ add -> commit  -> push
 merge: pull origin -> push
 conflict
 
----------------------------------------
+*******************************************************************************
 Kết quả cần đạt được: 
 	mỗi nhóm có 1 repo trên github/gitlab
 	mỗi thành viên sẽ là 1 branch riêng
