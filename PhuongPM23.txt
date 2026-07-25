@@ -1,4 +1,4 @@
-A. Context 
+A. Context - PhuongPM23
 You have been tasked with building and managing the database for a small library management system. This database needs to store information about readers, books, and borrow transactions. 
 B. Objectives 
 Design and create a simple database schema from scratch. 
