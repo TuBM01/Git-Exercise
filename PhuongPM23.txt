@@ -1,0 +1,62 @@
+A. Context - MAIN & PhuongPM23
+You have been tasked with building and managing the database for a small library management system. This database needs to store information about readers, books, and borrow transactions. 
+B. Objectives 
+Design and create a simple database schema from scratch. 
+Practice SQL commands: CREATE, INSERT, SELECT, UPDATE, DELETE. 
+Apply data validation and constraints during table creation. 
+Use data filtering techniques from basic to advanced (WHERE, LIKE, IN, 
+BETWEEN). Master combining data from multiple tables using INNER JOIN and LEFT JOIN. Build aggregate reports using GROUP BY, aggregate functions, and HAVING. 
+Apply best practices in database design and SQL querying. 
+Use comments in MYSQL for clarity and documentation. 
+C. Detailed Requirements 
+Part 1: Database and Data Setup 
+. Create Database: 
+Create a new database named library_management. 
+. Create Tables: 
+In the library_management database, write and run the SQL commands to create the following 3 tables: 
+readers Table: 
+reader_id (SERIAL, PRIMARY KEY) 
+reader_name (VARCHAR(100), NOT NULL) 
+email (VARCHAR(100), UNIQUE) 
+join_date (DATE, DEFAULT CURRENT_DATE) 
+books Table: 
+book_id (SERIAL, PRIMARY KEY) 
+book_title (VARCHAR(150), NOT NULL) 
+author (VARCHAR(100)) 
+category (VARCHAR(50)) 
+price (DECIMAL(10, 2), CHECK (price > 0)) 
+stock_quantity (INT, DEFAULT 0) 
+borrows Table:
+borrow_id (SERIAL, PRIMARY KEY) 
+reader_id (INT, FOREIGN KEY referencing readers(reader_id)) 
+book_id (INT, FOREIGN KEY referencing books(book_id)) 
+borrow_date (DATE, NOT NULL) 
+return_date (DATE) 
+status (VARCHAR(20), DEFAULT 'Borrowed') -- e.g., Borrowed, Returned, Overdue 
+. Insert Sample Data: 
+Write and run INSERT commands to add data to the tables: 
+Add at least 5 readers to the readers table. 
+Add at least 8 books belonging to different categories (e.g., 'Fiction', 'Science', 'History'). Add at least 10 borrow transactions to the borrows table, ensuring that: 
+Some readers have multiple borrows. 
+Some books are borrowed multiple times. 
+There is at least one reader who has not borrowed any books. 
+Part 2: Data Querying and Analysis 
+Write SQL statements to answer the following questions. 
+Section A: Basic Queries and Updates 
+. Get a list of borrow transactions that occurred in June 2024. 
+. Delete all borrow transactions with the status 'Overdue'. 
+. Count the total number of readers. 
+Section B: Joins, Grouping and Aggregate Reports 
+. Display the reader's name and the title of the book they borrowed in each transaction. . List the books that have never been borrowed. 
+. Get a list of all readers and the number of books they have borrowed. 
+. For each book, calculate the total number of times it has been borrowed. Show the book title and borrow count, sorted by borrow count in descending order. 
+. For each month in 2024, count the total number of borrow transactions. 
+D. Submission 
+Create a single .txt file (e.g., final_assignment_yourname.txt). Copy all the SQL commands you wrote for Part 1 and Part 2 (Sections A, B) into this file. Submit the .txt file as required by your instructor. 
+E. Evaluation Criteria 
+Correctness of SQL commands and adherence to requirements. 
+Proper use of SQL syntax and best practices. 
+Clarity and organization of the SQL code, including comments. 
+Completeness of the database schema and data insertion. 
+Accuracy of query results based on the provided questions.
+Efficiency of queries, especially for joins and aggregate functions.

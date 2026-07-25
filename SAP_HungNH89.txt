@@ -1,0 +1,167 @@
+*&---------------------------------------------------------------------*
+*& Report ZPG_HUNGNH89_TOPIC_4
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT ZPG_HUNGNH89_TOPIC_4.
+
+* Tables definition
+TABLES: SPFLI, SBOOK.
+
+* Types definition
+TYPES: BEGIN OF TY_REPORT,
+         CARRID       TYPE SPFLI-CARRID,
+         CONNID       TYPE SPFLI-CONNID,
+         FLDATE       TYPE SBOOK-FLDATE,
+         COUNTRYFR    TYPE SPFLI-COUNTRYFR,
+         CITYFROM     TYPE SPFLI-CITYFROM,
+         COUNTRYTO    TYPE SPFLI-COUNTRYTO,
+         CITYTO       TYPE SPFLI-CITYTO,
+         BOOK_COUNT   TYPE I,
+         TOTAL_AMOUNT TYPE SBOOK-LOCCURAM,
+         CURRENCY     TYPE SBOOK-LOCCURKEY,
+       END OF TY_REPORT.
+
+* Data declarations
+DATA: GT_REPORT TYPE TABLE OF TY_REPORT,
+      GS_REPORT TYPE TY_REPORT.
+
+* Selection screen
+SELECTION-SCREEN BEGIN OF BLOCK B1 WITH FRAME TITLE TEXT-001.
+  SELECT-OPTIONS: S_CARRID FOR SPFLI-CARRID,
+                  S_CONNID FOR SPFLI-CONNID.
+  SELECTION-SCREEN SKIP 1.
+  SELECT-OPTIONS: S_CTYFR  FOR SPFLI-COUNTRYFR,
+                  S_CITYFR FOR SPFLI-CITYFROM,
+                  S_CTYTO  FOR SPFLI-COUNTRYTO,
+                  S_CITYTO FOR SPFLI-CITYTO.
+SELECTION-SCREEN END OF BLOCK B1.
+
+* Selection screen - Layout Options
+SELECTION-SCREEN BEGIN OF BLOCK B2 WITH FRAME TITLE TEXT-002.
+  PARAMETERS: R_STD RADIOBUTTON GROUP RAD1 DEFAULT 'X',
+              R_SRT RADIOBUTTON GROUP RAD1.
+SELECTION-SCREEN END OF BLOCK B2.
+
+* Main processing
+START-OF-SELECTION.
+  PERFORM GET_DATA.
+
+  IF GT_REPORT IS INITIAL.
+    MESSAGE 'No flight booking data found in Database' TYPE 'S' DISPLAY LIKE 'E'.
+    RETURN.
+  ENDIF.
+
+  PERFORM PROCESS_DATA.
+  PERFORM DISPLAY_DATA.
+
+* Page header
+TOP-OF-PAGE.
+  PERFORM WRITE_HEADER.
+
+*---------------------------------------------------------------------*
+* Form GET_DATA
+*---------------------------------------------------------------------*
+* Get data from table SPFLI, SBOOK
+FORM GET_DATA.
+  SELECT SPFLI~CARRID,
+         SPFLI~CONNID,
+         SBOOK~FLDATE,
+         SPFLI~COUNTRYFR,
+         SPFLI~CITYFROM,
+         SPFLI~COUNTRYTO,
+         SPFLI~CITYTO,
+         COUNT( * ) AS BOOK_COUNT,
+         SUM( SBOOK~LOCCURAM ) AS TOTAL_AMOUNT,
+         SBOOK~LOCCURKEY AS CURRENCY
+    INTO TABLE @GT_REPORT
+    FROM SPFLI
+    INNER JOIN SBOOK
+      ON  SPFLI~CARRID = SBOOK~CARRID
+      AND SPFLI~CONNID = SBOOK~CONNID
+    WHERE SPFLI~CARRID    IN @S_CARRID
+      AND SPFLI~CONNID    IN @S_CONNID
+      AND SPFLI~COUNTRYFR IN @S_CTYFR
+      AND SPFLI~CITYFROM  IN @S_CITYFR
+      AND SPFLI~COUNTRYTO IN @S_CTYTO
+      AND SPFLI~CITYTO    IN @S_CITYTO
+    GROUP BY SPFLI~CARRID,
+             SPFLI~CONNID,
+             SBOOK~FLDATE,
+             SPFLI~COUNTRYFR,
+             SPFLI~CITYFROM,
+             SPFLI~COUNTRYTO,
+             SPFLI~CITYTO,
+             SBOOK~LOCCURKEY.
+ENDFORM.
+
+*---------------------------------------------------------------------*
+* Form PROCESS_DATA
+*---------------------------------------------------------------------*
+FORM PROCESS_DATA.
+  IF R_srt = 'X'.
+    SORT GT_REPORT BY FLDATE CARRID CONNID.
+  ENDIF.
+ENDFORM.
+
+*---------------------------------------------------------------------*
+* Form DISPLAY_DATA
+*---------------------------------------------------------------------*
+FORM DISPLAY_DATA.
+  LOOP AT GT_REPORT INTO GS_REPORT.
+    FORMAT COLOR COL_NORMAL.
+    IF R_STD = 'X'.
+      WRITE: /(10) GS_REPORT-CARRID,
+             (14) GS_REPORT-CONNID,
+             (14) GS_REPORT-FLDATE,
+             (14) GS_REPORT-COUNTRYFR,
+             (20) GS_REPORT-CITYFROM,
+             (14) GS_REPORT-COUNTRYTO,
+             (20) GS_REPORT-CITYTO,
+             (10) GS_REPORT-BOOK_COUNT,
+             (14) GS_REPORT-TOTAL_AMOUNT CURRENCY GS_REPORT-CURRENCY,
+             (5)  GS_REPORT-CURRENCY.
+    ELSE.
+      WRITE: /(14) GS_REPORT-FLDATE,
+             (10) GS_REPORT-CARRID,
+             (14) GS_REPORT-CONNID,
+             (14) GS_REPORT-COUNTRYFR,
+             (20) GS_REPORT-CITYFROM,
+             (14) GS_REPORT-COUNTRYTO,
+             (20) GS_REPORT-CITYTO,
+             (10) GS_REPORT-BOOK_COUNT,
+             (14) GS_REPORT-TOTAL_AMOUNT CURRENCY GS_REPORT-CURRENCY,
+             (5)  GS_REPORT-CURRENCY.
+    ENDIF.
+    FORMAT COLOR OFF.
+  ENDLOOP.
+ENDFORM.
+
+*---------------------------------------------------------------------*
+* Form WRITE_HEADER
+*---------------------------------------------------------------------*
+FORM WRITE_HEADER.
+  FORMAT COLOR COL_HEADING.
+  IF R_std = 'X'.
+    WRITE: /(10) 'Airline',
+           (14) 'Flight Number',
+           (14) 'Flight Date',
+           (14) 'Country From',
+           (20) 'City From',
+           (14) 'Country To',
+           (20) 'City To',
+           (10) 'Total Booking',
+           (20) 'Total Value' RIGHT-JUSTIFIED.
+  ELSE.
+    WRITE: /(14) 'Flight Date',
+           (10) 'Airline',
+           (14) 'Flight Number',
+           (14) 'Country From',
+           (20) 'City From',
+           (14) 'Country To',
+           (20) 'City To',
+           (10) 'Total Booking',
+           (20) 'Total Value' RIGHT-JUSTIFIED.
+  ENDIF.
+  FORMAT COLOR OFF.
+ENDFORM.
