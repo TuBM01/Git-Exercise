@@ -2,7 +2,7 @@
 *& Report ZPG_HUNGNH89_TOPIC_4
 *&---------------------------------------------------------------------*
 *&
-*&----------------------------Thay doi tu nhanh hungnh89---------------*
+*&----------------------------Thay doi tu nhanh feature----------------*
 REPORT ZPG_HUNGNH89_TOPIC_4.
 
 * Tables definition
